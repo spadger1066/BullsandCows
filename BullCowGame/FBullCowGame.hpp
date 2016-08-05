@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <string>
+#include <algorithm>
 
 #endif /* FBullCowGame_hpp */
 
@@ -23,15 +24,27 @@ struct FBullCowCount {
     int32 Cows = 0;
 };
 
+enum class EWordStatus {
+    OK,
+    Not_Isogram,
+    Wrong_Length,
+    Not_Lowercase,
+    Not_a_Word,
+    Nothing_Entered
+};
+
 class FBullCowGame {
 public:
     int32 GetMaxTries() const;
     int32 GetCurrentTry() const;
-    bool IsGameWon() const;
+    int32 GetHiddenWordLength() const;
 
+    bool IsGameWon() const;
+    EWordStatus CheckGuessValidity(FString) const;
     void Reset(); // TODO make a more rich return statement
-    bool CheckGuessValidity(FString);
     void IncTry();
+    FString convertToLower(FString) const;
+    
     
     FBullCowCount SubmitGuess(FString);
     

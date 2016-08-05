@@ -22,8 +22,6 @@ FBullCowGame BCGame; // instantiate a new game
 
 int main() {
 
-    PrintIntro();
-
     do {
         PlayGame();
     } while (AskToPlayAgain());
@@ -34,24 +32,47 @@ int main() {
 void PlayGame(){
     BCGame.Reset();
     
+    PrintIntro();
+    
     // Loop for the number of turns asking for guesses
     for (int32 count = 1; count <= BCGame.GetMaxTries(); count++) {
         FText guess = GetGuess();
-        FBullCowCount bullCowCount = BCGame.SubmitGuess(guess);
-        // print the number of bulls and cows
-        std::cout << "Bulls " << bullCowCount.Bulls;
-        std::cout << " Cows " << bullCowCount.Cows;
-        std::cout << std::endl;
+        
+        EWordStatus status = BCGame.CheckGuessValidity(guess);
+        
+        switch (status) {
+            case EWordStatus::OK: {
+                FBullCowCount bullCowCount = BCGame.SubmitGuess(guess);
+                // print the number of bulls and cows
+                std::cout << "Bulls " << bullCowCount.Bulls;
+                std::cout << " Cows " << bullCowCount.Cows;
+                std::cout << std::endl;
+
+                break;
+            }
+            case EWordStatus::Wrong_Length: {
+                std::cout << "Wrong length! Try again.\n";
+                break;
+            }
+            case EWordStatus::Not_Lowercase : {
+                std::cout << "Not Lowercase! Try again.\n";
+                break;
+            }
+            default: {
+                std::cout << "Not Valid! Try again.\n";
+                break;
+            }
+        }
+        if (status == EWordStatus::OK) {
+        }
     }
     return;
 }
 
 // Introduce the game
 void PrintIntro() {
-    constexpr int32 WORD_LENGTH = 9;
-
     std::cout << "Welcome to Bulls and Cows\n";
-    std::cout << "Can you guess the " << WORD_LENGTH;
+    std::cout << "Can you guess the " << BCGame.GetHiddenWordLength();
     std::cout << " letter isogram I'm thinking of?\n";
     return;
 }

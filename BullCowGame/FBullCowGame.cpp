@@ -5,8 +5,29 @@
 //  Created by Stephen on 03/08/2016.
 //  Copyright © 2016 luminator.technology.com. All rights reserved.
 //
-
 #include "FBullCowGame.hpp"
+
+int32 FBullCowGame::GetMaxTries() const { return myMaxTries; }
+int32 FBullCowGame::GetCurrentTry() const { return myCurrentTry; }
+int32 FBullCowGame::GetHiddenWordLength() const { return (int32)MyHiddenWord.length(); }
+
+bool FBullCowGame::IsGameWon() const { return false; }
+
+EWordStatus FBullCowGame::CheckGuessValidity(FString guess) const {
+
+    // if the guess isn't the isogram
+    if (false) {
+        return EWordStatus::Not_Isogram;
+        // if the guess isn't all lowercase
+    } else if (convertToLower(guess) != guess) {
+        return EWordStatus::Not_Lowercase;
+        // if the guess isn't the right length
+    } else if (guess.length() != FBullCowGame::GetHiddenWordLength()) {
+        return EWordStatus::Wrong_Length;
+    } else {
+        return EWordStatus::OK;
+    }
+}
 
 void FBullCowGame::Reset() {
     constexpr int32 MAX_TRIES = 8;
@@ -17,22 +38,6 @@ void FBullCowGame::Reset() {
     
     myCurrentTry = 1;
     return;
-}
-
-int32 FBullCowGame::GetMaxTries() const {
-    return myMaxTries;
-}
-
-int32 FBullCowGame::GetCurrentTry() const {
-    return myCurrentTry;
-}
-
-bool FBullCowGame::IsGameWon() const {
-    return false;
-}
-
-bool FBullCowGame::CheckGuessValidity(FString) {
-    return false;
 }
 
 void FBullCowGame::IncTry() {
@@ -69,4 +74,10 @@ FBullCowCount FBullCowGame::SubmitGuess(FString guess) {
         }
     }
     return bullCowCount;
+}
+
+FString FBullCowGame::convertToLower(FString text) const {
+    std::string str = text;
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
 }
